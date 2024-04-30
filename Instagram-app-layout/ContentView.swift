@@ -14,11 +14,87 @@ struct ContentView: View {
     }
 }
 
+struct StoryList: View {
+    private let stories: [StoryValue]
+    
+    init(stories: [StoryValue] = StoryValue.mockStories) {
+        self.stories = stories
+    }
+    
+    var body: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            LazyHStack {
+                ForEach(stories) { story in
+                    VStack {
+                        Story(imageName: story.imageName)
+                            .padding(5)
+                        Text(story.name)
+                    }
+                }
+            }
+            .padding()
+        }
+    }
+}
+
+struct StoryValue: Identifiable {
+    let id: UUID = UUID()
+    let name: String
+    let imageName: ImageResource
+}
+
+extension StoryValue {
+    static let mockStories: [StoryValue] = [
+        StoryValue(name: "John", imageName: .avatar1),
+        StoryValue(name: "Emily", imageName: .avatar2),
+        StoryValue(name: "Michael", imageName: .avatar3),
+        StoryValue(name: "Sophia", imageName: .avatar4),
+        StoryValue(name: "Daniel", imageName: .avatar1),
+        StoryValue(name: "Olivia", imageName: .avatar2),
+        StoryValue(name: "James", imageName: .avatar3),
+        StoryValue(name: "Emma", imageName: .avatar4),
+        StoryValue(name: "William", imageName: .avatar1),
+        StoryValue(name: "Ava", imageName: .avatar2)
+    ]
+}
+
+struct Story: View {
+    private let imageName: ImageResource
+    
+    init(imageName: ImageResource = .avatar1) {
+        self.imageName = imageName
+    }
+    
+    var body: some View {
+        Button { } label: {
+            Image(imageName)
+                .resizable()
+                .scaledToFill()
+                .frame(width: 65, height: 65)
+                .clipShape(Circle())
+                .overlay {
+                    Circle()
+                        .stroke(.white, lineWidth: 5)
+                }
+                .overlay {
+                    Circle()
+                        .stroke(
+                            LinearGradient(
+                                colors: [.red, .orange],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            ), lineWidth: 2
+                        )
+                }
+        }
+    }
+}
+
 struct HomeView: View {
     var body: some View {
         NavigationView {
-            VStack {
-                
+            ScrollView(showsIndicators: false) {
+                StoryList()
             }
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
